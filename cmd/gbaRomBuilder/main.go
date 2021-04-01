@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 )
 
@@ -113,12 +114,23 @@ func toBin(objcopy, path string) {
 }
 
 func gbafix(gbafix string, params params) {
+	args := []string{
+		gbafix,
+		params.OutFile,
+		"-t", params.Title,
+	}
+	if len(params.MakerCode) > 0 {
+		args = append(args, "-m", params.MakerCode)
+	}
+	if len(params.GameCode) > 0 {
+		args = append(args, "-c", params.GameCode)
+	}
+	if params.Version > 0 {
+		args = append(args, "-r", strconv.Itoa(params.Version))
+	}
 	cmd := exec.Cmd{
-		Path: gbafix,
-		Args: []string{
-			gbafix,
-			params.OutFile,
-		},
+		Path:   gbafix,
+		Args:   args,
 		Stderr: os.Stderr,
 		Stdout: os.Stdout,
 	}
