@@ -23,8 +23,9 @@ const (
 	L
 )
 
-var last ButtonState
-var current ButtonState
+// initialize both states with no buttons pressed
+var last ButtonState = 0x3FF
+var current ButtonState = 0x3FF
 
 func (state ButtonState) isDown(button Button) bool {
 	// key bits are active low
