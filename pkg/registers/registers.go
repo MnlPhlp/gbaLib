@@ -1,4 +1,4 @@
-package gbaLib
+package registers
 
 import (
 	"runtime/volatile"
@@ -57,8 +57,8 @@ type registers struct {
 	IF *volatile.Register16
 }
 
-var Register = registers{
-	Video: videoRegisters{
+var (
+	Video = videoRegisters{
 		DispCnt:  (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000000))),
 		DispStat: (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000004))),
 		VCount:   (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000006))),
@@ -66,8 +66,8 @@ var Register = registers{
 		BG1Cnt:   (*volatile.Register16)(unsafe.Pointer(uintptr(0x400000A))),
 		BG2Cnt:   (*volatile.Register16)(unsafe.Pointer(uintptr(0x400000C))),
 		BG3Cnt:   (*volatile.Register16)(unsafe.Pointer(uintptr(0x400000E))),
-	},
-	Sound: soundRegister{
+	}
+	Sound = soundRegister{
 		Sound1Cnt_L: (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000060))),
 		Sound1Cnt_H: (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000062))),
 		Sound1Cnt_X: (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000064))),
@@ -94,11 +94,11 @@ var Register = registers{
 		FIFO_A_H:    (*volatile.Register16)(unsafe.Pointer(uintptr(0x40000A2))),
 		FIFO_B_L:    (*volatile.Register16)(unsafe.Pointer(uintptr(0x40000A4))),
 		FIFO_B_H:    (*volatile.Register16)(unsafe.Pointer(uintptr(0x40000A6))),
-	},
-	Key: keyRegister{
+	}
+	Key = keyRegister{
 		KeyPad: (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000130))),
 		KeyCnt: (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000132))),
-	},
-	IE: (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000200))),
-	IF: (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000202))),
-}
+	}
+	IE = (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000200)))
+	IF = (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000202)))
+)

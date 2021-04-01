@@ -1,8 +1,10 @@
-package gbaLib
+package interrupts
 
 import (
 	"machine"
 	"runtime/interrupt"
+
+	"github.com/MnlPhlp/gbaLib/pkg/registers"
 )
 
 type interruptHandler func()
@@ -20,19 +22,9 @@ func setupInterrupt(i interrupt.Interrupt, f func()) {
 	i.Enable()
 }
 
-func SetKeypadInterrupt(f func()) {
-	// enable the interrupt
-	Register.Key.KeyCnt.SetBits(1 << 0xE)
-	// enable all keys
-	Register.Key.KeyCnt.SetBits(0b1111111111)
-	// create a new Interrupt and store the function
-	i := interrupt.New(machine.IRQ_KEYPAD, isr)
-	setupInterrupt(i, f)
-}
-
 func SetVBlankInterrupt(f func()) {
 	// enable the interrupt
-	Register.Video.DispStat.SetBits(1 << 3)
+	registers.Video.DispStat.SetBits(1 << 3)
 	// create a new Interrupt and store the function
 	i := interrupt.New(machine.IRQ_VBLANK, isr)
 	setupInterrupt(i, f)
@@ -40,7 +32,7 @@ func SetVBlankInterrupt(f func()) {
 
 func Stop() {
 	// disable interrupts
-	Register.IE.Set(0)
+	registers.IE.Set(0)
 	// keep running
 	for {
 	}
