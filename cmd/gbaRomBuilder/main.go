@@ -120,13 +120,13 @@ func gbafix(gbafix string, params params) {
 		"-t", params.Title,
 	}
 	if len(params.MakerCode) > 0 {
-		args = append(args, "-m", params.MakerCode)
+		args = append(args, "-m"+params.MakerCode)
 	}
 	if len(params.GameCode) > 0 {
-		args = append(args, "-c", params.GameCode)
+		args = append(args, "-c"+params.GameCode)
 	}
 	if params.Version > 0 {
-		args = append(args, "-r", strconv.Itoa(params.Version))
+		args = append(args, "-r"+strconv.Itoa(params.Version))
 	}
 	cmd := exec.Cmd{
 		Path:   gbafix,
@@ -145,6 +145,8 @@ func main() {
 	params := getParams()
 	// build the program
 	buildSrc(dependencies.tinygo, params.Source, params.OutFile)
+	println("Build Complete")
 	toBin(dependencies.objcopy, params.OutFile)
+	println("Converted to binary")
 	gbafix(dependencies.gbafix, params)
 }
