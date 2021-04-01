@@ -40,7 +40,7 @@ func keyIsr(interrupt.Interrupt) {
 	current = ButtonState(registers.Key.KeyPad.Get())
 }
 
-func enableKeys() {
+func EnableKeys() {
 	// enable the interrupt
 	registers.Key.KeyCnt.SetBits(1 << 0xE)
 	// enable all keys
