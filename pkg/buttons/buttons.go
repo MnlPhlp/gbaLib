@@ -36,12 +36,16 @@ func (button Button) IsPressed() bool {
 	return current.isDown(button)
 }
 
-func keyIsr(interrupt.Interrupt) {
+func Poll() {
 	last = current
 	current = ButtonState(registers.Key.KeyPad.Get())
 }
 
-func Enable() {
+func keyIsr(interrupt.Interrupt) {
+	Poll()
+}
+
+func EnableAutoPolling() {
 	// enable the interrupt
 	registers.Key.KeyCnt.SetBits(1 << 0xE)
 	// enable all keys
