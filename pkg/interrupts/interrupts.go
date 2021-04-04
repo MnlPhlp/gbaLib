@@ -32,7 +32,7 @@ func SetVBlankInterrupt(f func()) {
 
 func Stop() {
 	// disable interrupts
-	registers.IE.Set(0)
+	interrupt.Disable()
 	// keep running
 	for {
 	}

@@ -49,10 +49,22 @@ type soundRegister struct {
 	FIFO_B_H *volatile.Register16
 }
 
+type timerRegister struct {
+	Tm0Cnt,
+	Tm0Data,
+	Tm1Cnt,
+	Tm1Data,
+	Tm2Cnt,
+	Tm2Data,
+	Tm3Cnt,
+	Tm3Data *volatile.Register16
+}
+
 type registers struct {
 	Video videoRegisters
 	Key   keyRegister
 	Sound soundRegister
+	Timer timerRegister
 	IE,
 	IF *volatile.Register16
 }
@@ -98,6 +110,16 @@ var (
 	Key = keyRegister{
 		KeyPad: (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000130))),
 		KeyCnt: (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000132))),
+	}
+	Timer = timerRegister{
+		Tm0Data: (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000100))),
+		Tm0Cnt:  (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000102))),
+		Tm1Data: (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000104))),
+		Tm1Cnt:  (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000106))),
+		Tm2Data: (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000108))),
+		Tm2Cnt:  (*volatile.Register16)(unsafe.Pointer(uintptr(0x400010A))),
+		Tm3Data: (*volatile.Register16)(unsafe.Pointer(uintptr(0x400010C))),
+		Tm3Cnt:  (*volatile.Register16)(unsafe.Pointer(uintptr(0x400010E))),
 	}
 	IE = (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000200)))
 	IF = (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000202)))

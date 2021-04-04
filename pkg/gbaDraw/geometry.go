@@ -1,30 +1,41 @@
 package gbaDraw
 
-import (
-	"image/color"
-)
-
-func ToRgba15(c color.RGBA) uint16 {
-	return uint16(c.R)&0x1f | uint16(c.G)&0x1f<<5 | uint16(c.B)&0x1f<<10
+func (dsp GbaDisplay) Filled2PointRect(x1, y1, x2, y2 int16, c colorIndex) {
+	if y1 > y2 {
+		tmp := y1
+		y1 = y2
+		y2 = tmp
+	}
+	for y := y1; y <= y2; y++ {
+		dsp.HLine(x1, x2, y, c)
+	}
 }
 
-func Filled2PointRect(x1, y1, x2, y2 int16, c uint16) {
-	xStep := int16(1)
-	if x2 < x1 {
-		xStep = -1
+func (dsp GbaDisplay) HLine(x1, x2, y int16, c colorIndex) {
+	if x1 > x2 {
+		tmp := x1
+		x1 = x2
+		x2 = tmp
 	}
-	yStep := int16(1)
-	if y2 < y1 {
-		yStep = -1
+	//check if starting with odd pixel
+	if x1&1 == 1 {
+		dsp.SetPixel(x1, y, c)
+		x1++
 	}
-	for x := x1; x != x2; x += xStep {
-		for y := y1; y != y2; y += yStep {
-			Display.SetPixel(x, y, c)
-		}
-		Display.SetPixel(x, y2, c)
+	// set pixel in blocks of two
+	c2 := uint16(c) | (uint16(c) << 8)
+	for x := (x1 >> 1); x <= (x2 >> 1); x++ {
+		dsp.vRam[dsp.drawPage][y][x].Set(c2)
 	}
-	for y := y1; y != y2; y += yStep {
-		Display.SetPixel(x2, y, c)
+	// check if ending with even pixel
+	if x2&1 == 0 {
+		dsp.SetPixel(x2, y, c)
 	}
-	Display.SetPixel(x2, y2, c)
+}
+
+func (dsp GbaDisplay) FilledCircle(x, y, r int16, c colorIndex) {
+	// dsp.SetPixel(x, y-r, c)
+	// dsp.SetPixel(x, y+r, c)
+	// dsp.HLine(x-r, x+r, y, c)
+	dsp.Filled2PointRect(x-r, y-r, x+r, y+r, c)
 }
