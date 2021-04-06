@@ -12,7 +12,7 @@ type GbaDisplay struct {
 	vRam     [2](*[160][120]volatile.Register16)
 	drawPage uint8
 }
-type colorIndex uint8
+type ColorIndex uint8
 type colorPalette *[256]volatile.Register16
 
 var Display = GbaDisplay{
@@ -23,20 +23,20 @@ var Display = GbaDisplay{
 	drawPage: 1,
 }
 var palette = (*[256]volatile.Register16)(unsafe.Pointer(uintptr(0x05000000)))
-var lastIndex = colorIndex(0)
+var lastIndex = ColorIndex(0)
 
 func toRGB15(c color.RGBA) uint16 {
 	return uint16(c.R)&0x1f | uint16(c.G)&0x1f<<5 | uint16(c.B)&0x1f<<10
 }
 
-func ToColorIndex(c color.RGBA) colorIndex {
+func ToColorIndex(c color.RGBA) ColorIndex {
 	lastIndex++
 	palette[lastIndex].Set(toRGB15(c))
 	return lastIndex
 }
 
 //go:inline
-func (dsp *GbaDisplay) SetPixel(x, y int16, c colorIndex) {
+func (dsp *GbaDisplay) SetPixel(x, y int16, c ColorIndex) {
 	// if x&1 == 0 { // for even registers shift value left
 	// 	dsp.vRam[dsp.drawPage][y][x>>1].ReplaceBits(uint16(c), 0xff, 8)
 	// } else {
