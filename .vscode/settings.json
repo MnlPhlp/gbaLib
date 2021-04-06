@@ -1,6 +1,0 @@
-{
-    "go.toolsEnvVars": {
-        "GOROOT": "~/.cache/tinygo/goroot-go1.16.2-4745553e7284bd1f3e3c744b505808fa0ba392238b10ed36cd0ca2982f7c51c1-syscall",
-        "GOFLAGS": "-tags=gameboyadvance,arm7tdmi,baremetal,linux,arm,tinygo,gc.conservative,scheduler.coroutines"
-    }
-}
