@@ -19,25 +19,25 @@ func (dsp GbaDisplay) HLine(x1, x2, y int16, c ColorIndex) {
 	}
 	//check if starting with odd pixel
 	if x1&1 == 1 {
-		dsp.SetPixel(x1, y, c)
+		dsp.SetPixelPallette(x1, y, c)
 		x1++
 	}
 	// set pixel in blocks of two
 	c2 := uint16(c) | (uint16(c) << 8)
 	for x := (x1 >> 1); x < (x2 >> 1); x++ {
-		dsp.vRam[dsp.drawPage][y][x].Set(c2)
+		dsp.vRam[drawPage][y][x].Set(c2)
 	}
 	// check if ending with even pixel
 	if x2&1 == 0 {
-		dsp.SetPixel(x2, y, c)
+		dsp.SetPixelPallette(x2, y, c)
 	} else {
-		dsp.vRam[dsp.drawPage][y][x2>>1].Set(c2)
+		dsp.vRam[drawPage][y][x2>>1].Set(c2)
 	}
 }
 
 func (dsp GbaDisplay) FilledDiamond(x, y, r int16, c ColorIndex) {
-	dsp.SetPixel(x, y-r, c)
-	dsp.SetPixel(x, y+r, c)
+	dsp.SetPixelPallette(x, y-r, c)
+	dsp.SetPixelPallette(x, y+r, c)
 	dsp.HLine(x-r, x+r, y, c)
 	for i := int16(1); i < r; i++ {
 		width := (r / (r >> 1)) * (r - i) //math.Sqrt(float64((r*r - i*i))) / 2))

@@ -9,8 +9,7 @@ import (
 )
 
 type GbaDisplay struct {
-	vRam     [2](*[160][120]volatile.Register16)
-	drawPage uint8
+	vRam [2](*[160][120]volatile.Register16)
 }
 type ColorIndex uint8
 type colorPalette *[256]volatile.Register16
@@ -20,10 +19,12 @@ var Display = GbaDisplay{
 		(*[160][120]volatile.Register16)(unsafe.Pointer(uintptr(0x06000000))), // Page 1
 		(*[160][120]volatile.Register16)(unsafe.Pointer(uintptr(0x0600A000))), // Page 2
 	},
-	drawPage: 1,
 }
-var palette = (*[256]volatile.Register16)(unsafe.Pointer(uintptr(0x05000000)))
-var lastIndex = ColorIndex(0)
+var (
+	palette   = (*[256]volatile.Register16)(unsafe.Pointer(uintptr(0x05000000)))
+	lastIndex = ColorIndex(0)
+	drawPage  = 1
+)
 
 func toRGB15(c color.RGBA) uint16 {
 	return uint16(c.R)&0x1f | uint16(c.G)&0x1f<<5 | uint16(c.B)&0x1f<<10
@@ -36,13 +37,8 @@ func ToColorIndex(c color.RGBA) ColorIndex {
 }
 
 //go:inline
-func (dsp *GbaDisplay) SetPixel(x, y int16, c ColorIndex) {
-	// if x&1 == 0 { // for even registers shift value left
-	// 	dsp.vRam[dsp.drawPage][y][x>>1].ReplaceBits(uint16(c), 0xff, 8)
-	// } else {
-	// 	dsp.vRam[dsp.drawPage][y][x>>1].ReplaceBits(uint16(c), 0xff, 0)
-	// }
-	dsp.vRam[dsp.drawPage][y][x>>1].ReplaceBits(uint16(c), 0xff, uint8(x&1)<<3)
+func (dsp GbaDisplay) SetPixelPallette(x, y int16, c ColorIndex) {
+	dsp.vRam[drawPage][y][x>>1].ReplaceBits(uint16(c), 0xff, uint8(x&1)<<3)
 }
 
 func (dsp GbaDisplay) Configure() {
@@ -58,10 +54,18 @@ func (dsp GbaDisplay) Configure() {
 	lastIndex = Blue
 }
 
-//go:inline
-func (dsp *GbaDisplay) Display() error {
+func (dsp GbaDisplay) Display() error {
 	old := registers.Video.DispCnt.Get()
-	registers.Video.DispCnt.Set(old ^ (uint16(dsp.drawPage) << 4)) // flip display
-	dsp.drawPage ^= 1                                              // switch drawPage
+	registers.Video.DispCnt.Set(old ^ (uint16(drawPage) << 4)) // flip display
+	drawPage ^= 1                                              // switch drawPage
 	return nil
+}
+
+// Be compatible to tinydraw/tinyfont
+func (dsp GbaDisplay) SetPixel(x, y int16, c color.RGBA) {
+	dsp.SetPixelPallette(x, y, ToColorIndex(c))
+}
+
+func (dsp GbaDisplay) Size() (int16, int16) {
+	return 240, 160
 }
