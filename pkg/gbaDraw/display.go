@@ -5,6 +5,7 @@ import (
 	"runtime/volatile"
 	"unsafe"
 
+	"github.com/MnlPhlp/gbaLib/pkg/gbaBios"
 	"github.com/MnlPhlp/gbaLib/pkg/registers"
 )
 
@@ -45,6 +46,8 @@ func (dsp GbaDisplay) Configure() {
 	value := uint16(0x04)              //Set Display Mode
 	value |= 1 << 0xA                  //Enable BG2
 	registers.Video.DispCnt.Set(value) //set Value
+	// enable Function for VSync
+	gbaBios.VBlankIntrWait_Enable()
 	// set some colors
 	palette[Black].Set(0)
 	palette[White].Set(0xffff)

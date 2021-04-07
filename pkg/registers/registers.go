@@ -60,13 +60,10 @@ type timerRegister struct {
 	Tm3Data *volatile.Register16
 }
 
-type registers struct {
-	Video videoRegisters
-	Key   keyRegister
-	Sound soundRegister
-	Timer timerRegister
+type interruptRegister struct {
 	IE,
-	IF *volatile.Register16
+	IF,
+	IFBios *volatile.Register16
 }
 
 var (
@@ -121,6 +118,9 @@ var (
 		Tm3Data: (*volatile.Register16)(unsafe.Pointer(uintptr(0x400010C))),
 		Tm3Cnt:  (*volatile.Register16)(unsafe.Pointer(uintptr(0x400010E))),
 	}
-	IE = (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000200)))
-	IF = (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000202)))
+	Interrupt = interruptRegister{
+		IE:     (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000200))),
+		IF:     (*volatile.Register16)(unsafe.Pointer(uintptr(0x4000202))),
+		IFBios: (*volatile.Register16)(unsafe.Pointer(uintptr(0x3007FF8))),
+	}
 )

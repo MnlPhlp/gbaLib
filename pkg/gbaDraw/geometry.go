@@ -40,7 +40,7 @@ func (dsp GbaDisplay) FilledDiamond(x, y, r int16, c ColorIndex) {
 	dsp.SetPixelPallette(x, y+r, c)
 	dsp.HLine(x-r, x+r, y, c)
 	for i := int16(1); i < r; i++ {
-		width := (r / (r >> 1)) * (r - i) //math.Sqrt(float64((r*r - i*i))) / 2))
+		width := (r / (r >> 1)) * (r - i)
 		width >>= 1
 		dsp.HLine(x-width, x+width, y+i, c)
 		dsp.HLine(x-width, x+width, y-i, c)
