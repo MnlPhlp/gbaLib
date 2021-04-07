@@ -22,6 +22,7 @@ var Display = GbaDisplay{
 	},
 }
 var (
+	colors    = make(map[color.RGBA]ColorIndex)
 	palette   = (*[256]volatile.Register16)(unsafe.Pointer(uintptr(0x05000000)))
 	lastIndex = ColorIndex(0)
 	drawPage  = 1
@@ -32,8 +33,12 @@ func toRGB15(c color.RGBA) uint16 {
 }
 
 func ToColorIndex(c color.RGBA) ColorIndex {
+	if index, ok := colors[c]; ok {
+		return index
+	}
 	lastIndex++
 	palette[lastIndex].Set(toRGB15(c))
+	colors[c] = lastIndex
 	return lastIndex
 }
 
@@ -55,6 +60,10 @@ func (dsp GbaDisplay) Configure() {
 	palette[Green].Set(toRGB15(color.RGBA{G: 255}))
 	palette[Blue].Set(toRGB15(color.RGBA{B: 255}))
 	lastIndex = Blue
+}
+
+func (dsp GbaDisplay) Blank() {
+	dsp.Filled2PointRect(0, 0, 239, 159, Black)
 }
 
 func (dsp GbaDisplay) Display() error {
