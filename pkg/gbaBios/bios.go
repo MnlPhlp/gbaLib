@@ -23,3 +23,11 @@ func VBlankIntrWait_Enable() {
 func VBlankIntrWait() {
 	arm.Asm(Instr_VBlankIntrWait)
 }
+
+func Halt() {
+	arm.Asm(Instr_Halt)
+}
+
+func Stop() {
+	arm.Asm(Instr_Stop)
+}

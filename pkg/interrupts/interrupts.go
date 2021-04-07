@@ -30,10 +30,7 @@ func SetVBlankInterrupt(f func()) {
 	setupInterrupt(i, f)
 }
 
-func Stop() {
+func Disable() {
 	// disable interrupts
 	interrupt.Disable()
-	// keep running
-	for {
-	}
 }

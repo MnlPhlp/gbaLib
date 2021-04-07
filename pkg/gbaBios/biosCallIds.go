@@ -3,11 +3,11 @@ package gbaBios
 // list of IDs of GBA Bios Calls
 // taken from https://www.coranac.com/tonc/text/swi.htm#sec-funs
 const (
-	Instr_SoftReset = ""
+	Instr_SoftReset = iota << 16
 	Instr_RegisterRamReset
-	Instr_Halt
-	Instr_Stop
-	Instr_IntrWait
+	Instr_Halt           = "swi 0x20000"
+	Instr_Stop           = "swi 0x30000"
+	Instr_IntrWait       = "swi 0x40000"
 	Instr_VBlankIntrWait = "swi 0x50000"
 	Instr_Div
 	Instr_DivArm
